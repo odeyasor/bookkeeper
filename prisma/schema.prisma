@@ -1,0 +1,26 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+model Entry {
+  id          Int      @id @default(autoincrement())
+  type        String
+  description String
+  amount      Float
+  date        String
+  userId      Int      // מזהה המשתמש שקשור לרשומה
+
+  User        User     @relation(fields: [userId], references: [id])
+}
+
+model User {
+  id       Int     @id @default(autoincrement())
+  email    String  @unique
+  password String
+  entries  Entry[]
+}
+

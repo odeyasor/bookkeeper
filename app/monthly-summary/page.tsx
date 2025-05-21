@@ -13,16 +13,19 @@ export default function MonthlySummaryPage() {
   const [loading, setLoading] = useState(true);
   const userId = localStorage.getItem('userId'); // לדוגמה, להביא מה-localStorage
 
-  useEffect(() => {
-    if (!userId) return;
+fetch(`/api/summary?userId=${userId}`)
+  .then(res => res.json())
+  .then(data => {
+    if (!Array.isArray(data)) throw new Error("Invalid response");
+    setSummaries(data);
+    setLoading(false);
+  })
+  .catch(err => {
+    console.error("שגיאה בקבלת הסיכומים:", err);
+    setLoading(false);
+  });
 
-    fetch(`/api/summary?userId=${userId}`)
-      .then(res => res.json())
-      .then(data => {
-        setSummaries(data);
-        setLoading(false);
-      });
-  }, [userId]);
+
 
   if (loading) return <div>טוען...</div>;
   if (!userId) return <div>יש להתחבר כדי לראות את הסיכומים</div>;
